@@ -1,0 +1,142 @@
+<?php
+session_start(); // Iniciar la sesión
+
+// Incluir el archivo de conexión
+$conn = include 'ConexionGlobal.php';
+
+// Verificar si la conexión está disponible
+if (!$conn) {
+    die("La conexión a la base de datos no está disponible.");
+}
+
+// Obtener la ID del empleado a modificar
+if (isset($_GET['IDEmpleado'])) {
+    $IDEmpleado = intval($_GET['IDEmpleado']); // Sanitizar el ID
+
+    // Obtener los datos del empleado desde la base de datos
+    $sql = "SELECT * FROM Empleados WHERE IDEmpleado = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $IDEmpleado);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $empleado = $result->fetch_assoc();
+
+    // Verificar si el empleado existe
+    if (!$empleado) {
+        echo "Empleado no encontrado.";
+        exit;
+    }
+} else {
+    echo "ID de empleado no especificado.";
+    exit;
+}
+
+// Procesar el formulario si se envía
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recuperar los datos del formulario
+    $IDServicio = trim($_POST["IDServicio"]);
+    $sueldo = trim($_POST["sueldo"]);
+    $correo = trim($_POST["email"]);
+    $roles = trim($_POST["roles"]);
+    $contrasenia_hash = password_hash(trim($_POST["contrasenia_hash"]), PASSWORD_DEFAULT); // Hash de la contraseña
+    $foto = ""; // Inicializar la variable para la ruta de la foto
+
+    // Array de errores
+    $errores = [];
+
+    // Validaciones
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $errores[] = "Correo electrónico no válido.";
+    }
+
+    // Validación de la foto
+    if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] == 0) {
+        $permitidos = ["image/jpeg", "image/png", "image/jpg"];
+        $maxSize = 2 * 1024 * 1024; // 2MB
+        $foto = $_FILES["foto"];
+
+        if (!in_array($foto["type"], $permitidos)) {
+            $errores[] = "Formato de imagen no permitido. Debe ser JPG, JPEG o PNG.";
+        }
+        if ($foto["size"] > $maxSize) {
+            $errores[] = "La imagen debe pesar menos de 2MB.";
+        }
+
+        if (empty($errores)) {
+            $carpetaDestino = "uploads/";
+            if (!file_exists($carpetaDestino)) {
+                mkdir($carpetaDestino, 0777, true); // Crear la carpeta si no existe
+            }
+
+            $nombreArchivo = uniqid() . "_" . basename($foto["name"]);
+            $rutaDestino = $carpetaDestino . $nombreArchivo;
+
+            if (move_uploaded_file($foto["tmp_name"], $rutaDestino)) {
+                $foto = $rutaDestino; // Guardar la ruta de la foto
+            } else {
+                $errores[] = "Error al subir la imagen.";
+            }
+        }
+    }
+
+    // Si no hay errores, actualizar en la base de datos
+    if (empty($errores)) {
+        $sql = "UPDATE Empleados SET IDServicio = ?, sueldo = ?, correo = ?, contrasenia_hash = ?, roles = ?, foto = ? WHERE IDEmpleado = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("dsssssi", $IDServicio, $sueldo, $correo, $contrasenia_hash, $roles, $foto, $IDEmpleado);
+
+        if ($stmt->execute()) {
+            echo "<p style='color:green;'>Empleado modificado con éxito.</p>";
+        } else {
+            echo "<p style='color:red;'>Error al modificar el empleado: " . $stmt->error . "</p>";
+        }
+
+        $stmt->close();
+    } else {
+        // Mostrar errores si los hay
+        foreach ($errores as $error) {
+            echo "<p style='color:red;'>$error</p>";
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Empleado</title>
+</head>
+
+<body>
+    <h2>Modificar Empleado</h2>
+    <form method="post" enctype="multipart/form-data">
+        <label for="IDServicio">ID Servicio:</label>
+        <input type="text" id="IDServicio" name="IDServicio" value="<?php echo htmlspecialchars($empleado['IDServicio']); ?>" required />
+
+        <label for="sueldo">Sueldo:</label>
+        <input type="text" id="sueldo" name="sueldo" value="<?php echo htmlspecialchars($empleado['sueldo']); ?>" required />
+
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($empleado['correo']); ?>" required />
+
+        <label for="contrasenia_hash">Contraseña:</label>
+        <input type="password" id="contrasenia_hash" name="contrasenia_hash" placeholder="Nueva Contraseña" />
+
+        <label for="roles">Rol de empleado:</label>
+        <select id="roles" name="roles" required>
+            <option value="1" <?php echo $empleado['roles'] == 1 ? 'selected' : ''; ?>>Administrador</option>
+            <option value="2" <?php echo $empleado['roles'] == 2 ? 'selected' : ''; ?>>Médico</option>
+            <option value="3" <?php echo $empleado['roles'] == 3 ? 'selected' : ''; ?>>Enfermero</option>
+        </select>
+
+        <label for="foto">Foto de Perfil:</label>
+        <input type="file" id="foto" name="foto" accept="image/*" />
+
+        <button type="submit">Modificar Empleado</button>
+    </form>
+</body>
+
+</html>

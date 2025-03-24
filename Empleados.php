@@ -61,7 +61,6 @@ if (isset($_GET["eliminar"])) {
             <li><a href="Empleados.php?rol=medico">👨‍⚕️ Ver Médicos</a></li>
             <li><a href="Empleados.php?rol=enfermero">👩‍⚕️ Ver Enfermeros</a></li>
             <li><a href="#">🏥 Consultorios</a></li>
-            <li><a href="#">🚪 Cerrar Sesión</a></li>
         </ul>
     </div>
 
@@ -110,23 +109,7 @@ if (isset($_GET["eliminar"])) {
 
         <section class="agregar-empleado">
             <h3>➕ Agregar Nuevo Empleado</h3>
-            <form method="POST" action="procesar_empleados.php">
-                <label for="nombre">Nombre Completo:</label>
-                <input type="text" id="nombre" name="nombre" required>
-
-                <label for="cargo">Cargo:</label>
-                <select id="cargo" name="cargo">
-                    <option value="Médico">Médico</option>
-                    <option value="Enfermero">Enfermero</option>
-                    <option value="Administrativo">Administrativo</option>
-                </select>
-
-                <label for="correo">Correo Electrónico:</label>
-                <input type="email" id="correo" name="correo" required>
-
-                <label for="usuario">Usuario:</label>
-                <input type="text" id="usuario" name="usuario" required>
-
+            <form action="RegistroEmpleados.html">                
                 <button type="submit" name="agregar">✔ Registrar Empleado</button>
             </form>
         </section>

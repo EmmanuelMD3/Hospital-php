@@ -12,11 +12,11 @@
         <h1>Panel de Enfermería</h1>
         <nav>
             <ul>
-                <li><a href="#">Pacientes Asignados</a></li>
+                <li><a href="VerPaciente.php">Pacientes Asignados</a></li>
                 <li><a href="#">Medicaciones</a></li>
                 <li><a href="#">Turnos</a></li>
                 <li><a href="#">Reportes</a></li>
-                <li><a href="#">Cerrar Sesión</a></li>
+                <li><a href="Cerrar_Sesion.php">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>

@@ -12,11 +12,11 @@
         <h1>Panel del Médico</h1>
         <nav>
             <ul>
-                <li><a href="#">Pacientes</a></li>
+                <li><a href="VerPaciente.php">Pacientes</a></li>
                 <li><a href="#">Consultorios</a></li>
                 <li><a href="#">Horarios</a></li>
                 <li><a href="#">Historial Médico</a></li>
-                <li><a href="#">Cerrar Sesión</a></li>
+                <li><a href="Cerrar_Sesion.php">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>

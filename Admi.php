@@ -16,7 +16,7 @@
                 <li><a href="#">Pacientes</a></li>
                 <li><a href="#">Consultorios</a></li>
                 <li><a href="#">Configuración</a></li>
-                <li><a href="#">Cerrar Sesión</a></li>
+                <li><a href="Cerrar_Sesion.php">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>

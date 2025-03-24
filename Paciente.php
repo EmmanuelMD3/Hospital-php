@@ -21,7 +21,7 @@
             <li><a href="#">📜 Historial Médico</a></li>
             <li><a href="#">💊 Tratamientos</a></li>
             <li><a href="#">👨‍⚕️ Médicos Disponibles</a></li>
-            <li><a href="#">🚪 Cerrar Sesión</a></li>
+            <li><a href="Cerrar_Sesion.php">🚪 Cerrar Sesión</a></li>
         </ul>
     </div>
 

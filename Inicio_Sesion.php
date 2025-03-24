@@ -39,10 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hash_almacenado = $row_empleado["contrasenia_hash"]; // Hash almacenado en la base de datos
         $rol = $row_empleado["roles"];  // Aquí definimos $rol
 
-        // Depuración: Imprimir valores
-        echo "Contraseña en texto plano: " . $contrasenia_plana . "<br>";
-        echo "Hash almacenado: " . $hash_almacenado . "<br>";
-
         // Verificar la contraseña
         if (password_verify($contrasenia_plana, $hash_almacenado)) {
             // Contraseña correcta
@@ -81,13 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row_paciente = $result_paciente->fetch_assoc();
             $hash_almacenado = $row_paciente["contrasenia_hash"]; // Hash almacenado en la base de datos
 
-            // Depuración: Imprimir valores
-            echo "Contraseña en texto plano: " . $contrasenia_plana . "<br>";
-            echo "Hash almacenado: " . $hash_almacenado . "<br>";
-
             // Verificar la contraseña
             if (password_verify($contrasenia_plana, $hash_almacenado)) {
-                echo "<script>alert('Bienvenido, paciente.');</script>";
+                header("Location: Paciente.php");
                 // Redirigir a una página para pacientes si es necesario
             } else {
                 echo "<script>alert('Usuario o contraseña incorrectos.');</script>";
