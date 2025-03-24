@@ -12,7 +12,7 @@
         <h1>Panel de Administrador</h1>
         <nav>
             <ul>
-                <li><a href="#">Ver Empleados</a></li>
+                <li><a href="Empleados.php">Ver Empleados</a></li>
                 <li><a href="#">Pacientes</a></li>
                 <li><a href="#">Consultorios</a></li>
                 <li><a href="#">Configuración</a></li>

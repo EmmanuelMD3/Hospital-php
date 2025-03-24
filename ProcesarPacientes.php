@@ -13,34 +13,42 @@ if (!$conn) {
 // Verificar si el formulario se envió
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recuperar los datos del formulario
-    $matricula = trim($_POST["matricula"]);
     $nombre = trim($_POST["nombre"]);
     $apellidoP = trim($_POST["apellidoP"]);
     $apellidoM = trim($_POST["apellidoM"]);
-    $IDServicio = trim($_POST["IDServicio"]);
-    $sueldo = trim($_POST["sueldo"]);
-    $correo = trim($_POST["email"]);
+    $NSS = trim($_POST["NSS"]);
+    $telefono = trim($_POST["telefono"]);
+    $correo = trim($_POST["correo"]);
     $usuario = trim($_POST["usuario"]);
     $contrasenia_hash = password_hash(trim($_POST["contrasenia_hash"]), PASSWORD_DEFAULT); // Hash de la contraseña
-    $roles = trim($_POST["roles"]);
-    $foto = ""; // Inicializar la variable para la ruta de la foto
-
-    // Array de errores
+    $direccion = trim($_POST["direccion"]);
+    $foto = ""; // Inicializar la variable para la foto
     $errores = [];
 
-    // Validaciones
+    // Validación de los campos
     if (strlen($nombre) < 3 || strlen($nombre) > 20) {
         $errores[] = "El nombre debe tener entre 3 y 20 caracteres.";
     }
+
     if (strlen($apellidoP) < 3 || strlen($apellidoP) > 20) {
         $errores[] = "El apellido paterno debe tener entre 3 y 20 caracteres.";
     }
+
     if (strlen($apellidoM) < 3 || strlen($apellidoM) > 20) {
         $errores[] = "El apellido materno debe tener entre 3 y 20 caracteres.";
     }
-    if (!preg_match("/^\d{6}$/", $matricula)) {
-        $errores[] = "La matrícula debe tener exactamente 6 dígitos.";
+
+    // Validación del NSS
+    if (!preg_match("/^\d{11}$/", $NSS)) {
+        $errores[] = "El número de seguridad social debe tener exactamente 11 dígitos.";
     }
+
+    // Validación del teléfono
+    if (!preg_match("/^\d{10}$/", $telefono)) {
+        $errores[] = "El teléfono debe tener exactamente 10 dígitos.";
+    }
+
+    // Validación del correo
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         $errores[] = "Correo electrónico no válido.";
     }
@@ -58,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errores[] = "La imagen debe pesar menos de 2MB.";
         }
 
+        // Si no hay errores en la validación de la foto, se mueve
         if (empty($errores)) {
             $carpetaDestino = "uploads/";
             if (!file_exists($carpetaDestino)) {
@@ -83,9 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<p style='color:red;'>$error</p>";
         }
     } else {
-        // Si no hay errores, insertar en la base de datos
-        $sql = "INSERT INTO Empleados (matricula, nombre, apellidoP, apellidoM, IDServicio, sueldo, correo, usuario, contrasenia_hash, roles, foto)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Si no hay errores, continuar con la inserción en la base de datos
+        $sql = "INSERT INTO Pacientes (nombre, apellidoP, apellidoM, NSS, telefono, correo, usuario, contrasenia_hash, direccion, foto)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $conn->prepare($sql);
         if ($stmt === false) {
@@ -93,12 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Insertar los datos en la base de datos
-        $stmt->bind_param("isssidsssis", $matricula, $nombre, $apellidoP, $apellidoM, $IDServicio, $sueldo, $correo, $usuario, $contrasenia_hash, $roles, $foto);
+        $stmt->bind_param("ssssssssss", $nombre, $apellidoP, $apellidoM, $NSS, $telefono, $correo, $usuario, $contrasenia_hash, $direccion, $foto);
 
         if ($stmt->execute()) {
-            echo "<p style='color:green;'>Empleado registrado con éxito.</p>";
+            echo "<p style='color:green;'>Paciente registrado con éxito.</p>";
         } else {
-            echo "<p style='color:red;'>Error al registrar el empleado: " . $stmt->error . "</p>";
+            echo "<p style='color:red;'>Error al registrar el paciente: " . $stmt->error . "</p>";
         }
 
         $stmt->close();

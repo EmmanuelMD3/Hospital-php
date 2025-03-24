@@ -9,7 +9,7 @@
     <body>
         <div class="container">
             <h2>Inicio de Sesión</h2>
-            <form action="" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
+            <form action="Inicio_Sesion.php" method="post" onsubmit="return validarFormulario()">
                 <label for="usuario">Usuario:</label>
                 <input
                   type="text"
@@ -19,15 +19,27 @@
                   required
                 />
         
-                <label for="contrasenia_hash">Contraseña:</label>
-                <input
-                  type="password"
-                  id="contrasenia_hash"
-                  name="contrasenia_hash"
-                  placeholder="Contraseña:"
-                  required
-                />
+                <input 
+                type="password" 
+                name="contrasenia" 
+                placeholder="Contraseña" 
+                required>
                 <button type="submit">Ingresar</button>
             </form>
     </body>
 </html>
+
+<script>
+  function validarFormulario() {
+    // Validaciones simples (puedes agregar más según sea necesario)
+    var usuario = document.getElementById("usuario").value;
+    var contrasenia = document.getElementsByName("contrasenia")[0].value;
+
+    if (usuario.trim() === "" || contrasenia.trim() === "") {
+        alert("Por favor, complete todos los campos.");
+        return false; // Evita que el formulario se envíe
+    }
+
+    return true; // Permite que el formulario se envíe
+}
+</script>

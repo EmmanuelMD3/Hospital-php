@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de pacientes</title>
+    <link rel="stylesheet" href="styles1.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Registro</h2>
+      <form id="formulario" enctype="multipart/form-data">
+        <label for="nombre">Nombre:</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          placeholder="Nombre:"
+          required
+        />
+
+        <label for="apellidoP">Apellido Paterno:</label>
+        <input
+          type="text"
+          id="apellidoP"
+          name="apellidoP"
+          placeholder="Apellido Paterno:"
+          required
+        />
+
+        <label for="apellidoM">Apellido Materno:</label>
+        <input
+          type="text"
+          id="apellidoM"
+          name="apellidoM"
+          placeholder="Apellido Materno:"
+          required
+        />
+
+        <label for="NSS">Número De Seguridad Social:</label>
+        <input
+          type="text"
+          id="NSS"
+          name="NSS"
+          placeholder="Número De Seguridad Social:"
+          required
+        />
+
+        <label for="telefono">Teléfono:</label>
+        <input
+          type="text"
+          id="telefono"
+          name="telefono"
+          placeholder="Teléfono:"
+          required
+        />
+
+        <label for="direccion">Dirección:</label>
+        <input
+          type="text"
+          id="direccion"
+          name="direccion"
+          placeholder="Dirección:"
+          required
+        />
+
+        <label for="correo">Correo Electrónico:</label>
+        <input
+          type="email"
+          id="correo"
+          name="correo"
+          placeholder="Correo Electrónico:"
+          required
+        />
+
+        <label for="usuario">Usuario:</label>
+        <input
+          type="text"
+          id="usuario"
+          name="usuario"
+          placeholder="Usuario:"
+          required
+        />
+
+        <label for="contrasenia_hash">Contraseña:</label>
+        <input
+          type="password"
+          id="contrasenia_hash"
+          name="contrasenia_hash"
+          placeholder="Contraseña:"
+          required
+        />
+
+        <label for="foto">Foto de Perfil:</label>
+        <input type="file" id="foto" name="foto" accept="image/*" required />
+
+        <button type="submit">Registrarse</button>
+      </form>
+
+      <p id="errorMensaje" style="color: red"></p>
+      <div id="mensaje"></div>
+      <!-- Aquí se mostrará el mensaje de éxito o error -->
+    </div>
+
+    <script>
+      document
+        .getElementById("formulario")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Evita que el formulario se envíe de manera tradicional
+
+          // Validación del formulario
+          let foto = document.getElementById("foto").files[0];
+          let errorMensaje = document.getElementById("errorMensaje");
+
+          if (foto) {
+            let tiposPermitidos = ["image/jpeg", "image/png", "image/jpg"];
+            if (!tiposPermitidos.includes(foto.type)) {
+              errorMensaje.innerText =
+                "Solo se permiten imágenes en formato JPG, JPEG o PNG.";
+              return false;
+            }
+            if (foto.size > 2 * 1024 * 1024) {
+              // 2MB máximo
+              errorMensaje.innerText = "La imagen debe pesar menos de 2MB.";
+              return false;
+            }
+          }
+
+          // Crear un objeto FormData con los datos del formulario
+          const formData = new FormData(this);
+
+          // Enviar los datos al servidor usando Fetch API
+          fetch("ProcesarPacientes.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.text()) // Convertir la respuesta a texto
+            .then((data) => {
+              // Mostrar el mensaje de éxito o error en el contenedor
+              document.getElementById("mensaje").innerHTML = data;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("mensaje").innerHTML =
+                "<p style='color:red;'>Error al procesar la solicitud.</p>";
+            });
+        });
+    </script>
+  </body>
+</html>

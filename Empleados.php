@@ -1,16 +1,30 @@
 <?php
-// Conexión a la base de datos
-$servername = "localhost";
-$username = "root";
-$password = "Emmanuel360";
-$dbname = "Hospital";
+session_start(); // Iniciar la sesión
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Incluir el archivo de conexión
+$conn = include 'ConexionGlobal.php';
 
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+// Verificar si la conexión está disponible
+if (!$conn) {
+    die("La conexión a la base de datos no está disponible.");
 }
+
+// Verificar el rol seleccionado para filtrar la consulta
+$rol = isset($_GET['rol']) ? $_GET['rol'] : 'todos'; // Default es mostrar todos los empleados
+
+// Preparar la consulta SQL basada en el rol
+$sql = "SELECT * FROM Empleados";
+
+// Si el rol es 'medico', buscamos solo médicos (roles = 1)
+if ($rol == 'medico') {
+    $sql .= " WHERE roles = 2"; // 1 para médicos
+}
+// Si el rol es 'enfermero', buscamos solo enfermeros (roles = 2)
+elseif ($rol == 'enfermero') {
+    $sql .= " WHERE roles = 3"; // 2 para enfermeros
+}
+
+$result = $conn->query($sql);
 
 // Eliminar empleado si se recibe un ID válido por GET
 if (isset($_GET["eliminar"])) {
@@ -27,27 +41,25 @@ if (isset($_GET["eliminar"])) {
     $stmt->close();
 }
 
-// Consultar empleados
-$sql = "SELECT IDEmpleado, nombre, correo, usuario FROM Empleados";
-$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Empleados</title>
     <link rel="stylesheet" href="styles7.css"> <!-- Aquí va la etiqueta -->
 </head>
+
 <body>
     <div class="sidebar">
         <h2>Administración</h2>
         <ul>
             <li><a href="Admi.php" class="active">🏠 Inicio</a></li>
-            <li><a href="Empleados.php">👥 Ver Empleados</a></li>
-            <li><a href="#">🩺 Médicos</a></li>
-            <li><a href="#">👩‍⚕️ Enfermeros</a></li>
+            <li><a href="Empleados.php?rol=medico">👨‍⚕️ Ver Médicos</a></li>
+            <li><a href="Empleados.php?rol=enfermero">👩‍⚕️ Ver Enfermeros</a></li>
             <li><a href="#">🏥 Consultorios</a></li>
             <li><a href="#">🚪 Cerrar Sesión</a></li>
         </ul>
@@ -76,7 +88,7 @@ $result = $conn->query($sql);
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($row["IDEmpleado"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["nombre"]) . "</td>";
+                            echo "<td>" . htmlspecialchars($row["nombre"]) . " " . htmlspecialchars($row["apellidoP"]) . " " . htmlspecialchars($row["apellidoM"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["correo"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["usuario"]) . "</td>";
                             echo "<td>
@@ -89,7 +101,7 @@ $result = $conn->query($sql);
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='5'>No hay empleados registrados.</td></tr>";
+                        echo "<tr><td colspan='5'>No hay empleados registrados para este rol.</td></tr>";
                     }
                     ?>
                 </tbody>
@@ -120,6 +132,7 @@ $result = $conn->query($sql);
         </section>
     </div>
 </body>
+
 </html>
 
 <?php

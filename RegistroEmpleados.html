@@ -1,75 +1,131 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro De Empleados</title>
+    <link rel="stylesheet" href="styles1.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registro De Empleados</title>
-  <link rel="stylesheet" href="styles1.css" />
-</head>
+  <body>
+    <div class="container">
+      <h2>Registro</h2>
+      <form id="formulario" method="post" enctype="multipart/form-data">
+        <!-- Campos del formulario -->
+        <label for="nombre">Nombre:</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          placeholder="Nombre:"
+          required
+        />
 
-<body>
-  <div class="container">
-    <h2>Registro</h2>
-    <form id="formulario" method="post" enctype="multipart/form-data">
-      <!-- Campos del formulario -->
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" name="nombre" placeholder="Nombre:" required />
+        <label for="apellidoP">Apellido Paterno:</label>
+        <input
+          type="text"
+          id="apellidoP"
+          name="apellidoP"
+          placeholder="Apellido Paterno:"
+          required
+        />
 
-      <label for="apellidoP">Apellido Paterno:</label>
-      <input type="text" id="apellidoP" name="apellidoP" placeholder="Apellido Paterno:" required />
+        <label for="apellidoM">Apellido Materno:</label>
+        <input
+          type="text"
+          id="apellidoM"
+          name="apellidoM"
+          placeholder="Apellido Materno:"
+          required
+        />
 
-      <label for="apellidoM">Apellido Materno:</label>
-      <input type="text" id="apellidoM" name="apellidoM" placeholder="Apellido Materno:" required />
+        <label for="matricula">Matricula:</label>
+        <input
+          type="text"
+          id="matricula"
+          name="matricula"
+          placeholder="Matricula:"
+          required
+        />
 
-      <label for="matricula">Matricula:</label>
-      <input type="text" id="matricula" name="matricula" placeholder="Matricula:" required />
+        <label for="servicio">Servicio:</label>
+        <div class="select-container">
+          <select id="servicio" name="IDServicio" required>
+            <option value="">Selecciona un servicio</option>
+          </select>
+        </div>
 
-      <label for="servicio">Servicio:</label>
-      <select id="servicio" name="IDServicio" required>
-        <option value="1">Urgencias</option>
-        <option value="2">Cuidados Intensivos</option>
-        <option value="3">Oncologia</option>
-        <option value="4">Medicina Interna</option>
-      </select>
+        <label for="sueldo">Sueldo:</label>
+        <input
+          type="text"
+          id="sueldo"
+          name="sueldo"
+          placeholder="Sueldo:"
+          required
+        />
 
-      <label for="sueldo">Sueldo:</label>
-      <input type="text" id="sueldo" name="sueldo" placeholder="Sueldo:" required />
+        <label for="email">Correo Electrónico:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Correo Electrónico:"
+          required
+        />
 
-      <label for="email">Correo Electrónico:</label>
-      <input type="email" id="email" name="email" placeholder="Correo Electrónico:" required />
+        <label for="usuario">Usuario:</label>
+        <input
+          type="text"
+          id="usuario"
+          name="usuario"
+          placeholder="Usuario:"
+          required
+        />
 
-      <label for="usuario">Usuario:</label>
-      <input type="text" id="usuario" name="usuario" placeholder="Usuario:" required />
+        <label for="contrasenia_hash">Contraseña:</label>
+        <input
+          type="password"
+          id="contrasenia_hash"
+          name="contrasenia_hash"
+          placeholder="Contraseña:"
+          required
+        />
 
-      <label for="contrasenia_hash">Contraseña:</label>
-      <input type="password" id="contrasenia_hash" name="contrasenia_hash" placeholder="Contraseña:" required />
+        <label class="form-label">Rol de empleado:</label>
+        <div class="rol-container">
+          <input
+            type="radio"
+            name="roles"
+            id="administrador"
+            value="1"
+            required
+          />
+          <label for="administrador">Administrador</label>
 
-      <label class="form-label">Rol de empleado:</label>
-      <div class="rol-container">
-        <input type="radio" name="roles" id="administrador" value="1" required />
-        <label for="administrador">Administrador</label>
+          <input type="radio" name="roles" id="medico" value="2" />
+          <label for="medico">Medico</label>
 
-        <input type="radio" name="roles" id="medico" value="2" />
-        <label for="medico">Medico</label>
+          <input type="radio" name="roles" id="enfermero" value="3" />
+          <label for="enfermero">Enfermero</label>
+        </div>
 
-        <input type="radio" name="roles" id="enfermero" value="3" />
-        <label for="enfermero">Enfermero</label>
-      </div>
+        <label for="foto">Foto de Perfil:</label>
+        <input type="file" id="foto" name="foto" accept="image/*" required />
 
-      <label for="foto">Foto de Perfil:</label>
-      <input type="file" id="foto" name="foto" accept="image/*" required />
+        <button type="submit">Registrarse</button>
+      </form>
 
-      <button type="submit">Registrarse</button>
-    </form>
+      <!-- Contenedor para mostrar mensajes -->
+      <div id="mensaje"></div>
+    </div>
+  </body>
+</html>
 
-    <!-- Contenedor para mostrar mensajes -->
-    <div id="mensaje"></div>
-  </div>
-
-  <!-- Script para manejar el envío del formulario con AJAX -->
-  <script>
-    document.getElementById("formulario").addEventListener("submit", function (event) {
+<!-- Script para manejar el envío del formulario con AJAX -->
+<script>
+  document
+    .getElementById("formulario")
+    .addEventListener("submit", function (event) {
       event.preventDefault(); // Evita que el formulario se envíe de manera tradicional
 
       // Crear un objeto FormData con los datos del formulario
@@ -80,17 +136,41 @@
         method: "POST",
         body: formData,
       })
-        .then(response => response.text()) // Convertir la respuesta a texto
-        .then(data => {
+        .then((response) => response.text()) // Convertir la respuesta a texto
+        .then((data) => {
           // Mostrar el mensaje de éxito o error en el contenedor
           document.getElementById("mensaje").innerHTML = data;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error:", error);
-          document.getElementById("mensaje").innerHTML = "<p style='color:red;'>Error al procesar la solicitud.</p>";
+          document.getElementById("mensaje").innerHTML =
+            "<p style='color:red;'>Error al procesar la solicitud.</p>";
         });
     });
-  </script>
-</body>
 
-</html>
+  function cargarServicios() {
+    fetch("obtener_servicios.php")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Datos recibidos:", data); // Para depuración
+        let select = document.getElementById("servicio");
+        select.innerHTML = '<option value="">Selecciona un servicio</option>';
+
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+
+        data.forEach((servicio) => {
+          let option = document.createElement("option");
+          option.value = servicio.IDServicio;
+          option.textContent = servicio.nombre_servicio;
+          select.appendChild(option);
+        });
+      })
+      .catch((error) => console.error("Error al cargar los servicios:", error));
+  }
+
+  // Ejecutar la función al cargar la página
+  document.addEventListener("DOMContentLoaded", cargarServicios);
+</script>
